@@ -48,12 +48,11 @@ x-init-ollama: &init-ollama
   entrypoint: /bin/sh
   command:
     - "-c"
-    - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull qwen2.5:7b-instruct-q4_K_M; OLLAMA_HOST=ollama:11434 ollama pull nomic-embed-text"
-    # For a larger context length verison of the model, run these commands:
-    # echo "FROM qwen2.5:7b-instruct-q4_K_M\n\nPARAMETER num_ctx 8096" > Modelfile
-    # ollama create qwen2.5:7b-8k -f ./Modelfile
-    # Change the name of the LLM and num_ctx as you see fit.
-
+    - "sleep 3; \
+       OLLAMA_HOST=ollama:11434 ollama pull hf.co/unsloth/Qwen3-4B-128K-GGUF:Q8_0; \
+       OLLAMA_HOST=ollama:11434 ollama pull hf.co/unsloth/Qwen3-8B-128K-GGUF:Q8_0; \
+       OLLAMA_HOST=ollama:11434 ollama pull hf.co/unsloth/Qwen3-14B-128K-GGUF:Q4_K_M; \
+       OLLAMA_HOST=ollama:11434 ollama pull nomic-embed-text"
 services:
   flowise:
     image: flowiseai/flowise
@@ -317,7 +316,7 @@ services:
       - UWSGI_WORKERS=${SEARXNG_UWSGI_WORKERS:-4}
       - UWSGI_THREADS=${SEARXNG_UWSGI_THREADS:-4}
     cap_drop:
-      - ALL
+    - ALL
     cap_add:
       - CHOWN
       - SETGID
